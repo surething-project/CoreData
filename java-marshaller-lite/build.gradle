@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    // https://github.com/grpc/grpc-java
+    id 'com.google.protobuf' version '0.8.17'
+}
+
+group 'eu.surething_project.core'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+// https://github.com/grpc/grpc-java
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.19.2'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.45.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java { option 'lite' }
+            }
+            task.plugins {
+                grpc { option 'lite' }
+            }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir '../data-types/proto'
+        }
+    }
+}
+
+dependencies {
+    // https://github.com/grpc/grpc-java
+    implementation 'io.grpc:grpc-okhttp:1.45.0'
+    implementation 'io.grpc:grpc-protobuf:1.45.0'
+    implementation 'io.grpc:grpc-stub:1.45.0'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+}
